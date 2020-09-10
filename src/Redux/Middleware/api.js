@@ -1,6 +1,6 @@
 import axios from 'axios'
 const apiCall = ({
-                     url = 'https://mobishop-a618d.firebaseapp.com',
+                     url = 'https://jsonplaceholder.typicode.com',
                      endpoint = '',
                      method = 'GET',
                      body = {},
@@ -30,8 +30,8 @@ export default state => next => action => {
 
     const onSuccess = (responce) => {
         console.log("responce", responce)
-        const resp = responce.data
-        next({type: types.SUCCESS, ...resp})
+        const data = responce.data
+        next({type: types.SUCCESS, data})
     }
 
     const onError = (err) => {

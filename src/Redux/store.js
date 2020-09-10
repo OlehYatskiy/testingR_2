@@ -4,11 +4,11 @@ import { compose,
 	applyMiddleware
 } from "redux";
 
-import product from './Product/product.reducer';
+import contact from './Contact/contact.reducer';
 import apiMiddleware from 'Redux/Middleware/api';
 
 
-const rootReducer = combineReducers({ product });
+const rootReducer = combineReducers({ contact });
 
 const store = createStore(rootReducer, compose(
 	applyMiddleware(apiMiddleware),

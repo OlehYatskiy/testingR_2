@@ -31,7 +31,7 @@ export default function Modal({contact, isOpen, setClose}) {
                 descriptionElement.focus();
             }
 
-            axios.get('https://jsonplaceholder.typicodecom/posts', {
+            axios.get('https://jsonplaceholder.typicode.com/posts', {
                 params: {
                     userId: contact.id
                 }
@@ -39,7 +39,10 @@ export default function Modal({contact, isOpen, setClose}) {
             .then((res) => {
                 setPosts(res.data)
             })
-            .catch((err) => console.log(err))
+            .catch((err) => {
+                console.log(err);
+                setClose();
+            })
         }
     }, [isOpen]);
 
@@ -61,7 +64,7 @@ export default function Modal({contact, isOpen, setClose}) {
                         </Container>
                         :
                         posts.map((el, i) => (
-                            <Fragment>
+                            <Fragment key={i}>
                                 <DialogContentText
                                     component='h4'
                                     variant='h6'

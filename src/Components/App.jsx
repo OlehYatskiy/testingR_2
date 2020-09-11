@@ -5,19 +5,22 @@ import {setContacts as onSetContacts} from "Redux/Contact/contact.actions";
 
 // import ProductList from "Components/ProductList";
 import ContactCard from "Components/ContactCard";
+import Header from "Components/Header";
+import Modal from "Components/Modal";
 
 import 'fontsource-roboto';
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from '@material-ui/core/CssBaseline';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import CardActionArea from '@material-ui/core/CardActionArea';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import SortIcon from '@material-ui/icons/Sort';
+import CircularProgress from "@material-ui/core/CircularProgress";
+import {Container} from "@material-ui/core";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -39,7 +42,8 @@ const useStyles = makeStyles((theme) => ({
     contactList: {
         width: theme.spacing(50),
         overflow: 'auto',
-        maxHeight: '84vh'
+        maxHeight: '84vh',
+        cursor: 'pointer'
     },
     footer: {
         marginTop: 'auto',
@@ -61,50 +65,15 @@ function App({contacts, isLoader, onSetContacts}) {
     }, []);
 
     const [sortValue, setSortValue] = useState('username');
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [openModal, setModalOpen] = useState(false);
+    const [contact, setContact] = useState({ id: null, contact: null });
 
-    // const setSortValue = (e, { name }) => {
-    //     return setActiveMenuItem(name);
-    // }
-    const isMenuOpen = Boolean(anchorEl);
-
-    const handleSortMenuOpen = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handleMenuClose = (sortValue) => {
-        return () => {
-            setSortValue(sortValue)
-            setAnchorEl(null);
-        }
-    };
-
-    const menuId = 'sort-menu';
-    const valuesSortedBy = [
-        { obj: 'username', label: 'Username'},
-        { obj: 'email', label: 'Email'},
-        { obj: 'website', label: 'Website'},
-        { obj: 'address.city', label: 'Address city'}
-    ];
-    const renderMenu = (
-        <Menu
-            anchorEl={anchorEl}
-            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-            id={menuId}
-            keepMounted
-            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-            open={isMenuOpen}
-            onClose={handleMenuClose}
-        >
-            {valuesSortedBy.map((el) => {
-                return <MenuItem
-                            sortValue={el.obj}
-                            onClick={handleMenuClose(el.obj)}>
-                                {el.label}
-                       </MenuItem>
-            })}
-        </Menu>
-    );
-
+    const onCardClick = (el) => (event) => {
+        event.stopPropagation();
+        const { id, username } = el;
+        setModalOpen(true);
+        setContact({id, username});
+    }
 
     const mapped = contacts.map((el, i) => {
         const splittedValue = sortValue.split('.').reduce(
@@ -130,31 +99,25 @@ function App({contacts, isLoader, onSetContacts}) {
         <div className={classes.root}>
             <CssBaseline />
             <main className={classes.main}>
-                <AppBar position="relative">
-                    <Toolbar>
-                        <IconButton
-                            edge="start"
-                            aria-label="account of current user"
-                            aria-controls={menuId}
-                            aria-haspopup="true"
-                            onClick={handleSortMenuOpen}
-                            color="inherit"
-                        >
-                            <SortIcon />
-                        </IconButton>
-                        <Typography variant="h6" color="inherit" noWrap>
-                            Header
-                        </Typography>
-                        <Button
-                            className={classes.loginButton}
-                            color="inherit">
-                            Login
-                        </Button>
-                    </Toolbar>
-                </AppBar>
-                <Grid className={classes.content} container spacing={2}>
+                <Header sortValue={sortValue} setSortValue={setSortValue} />
+                <Grid
+                    className={classes.content}
+                    container
+                    spacing={2}
+                >
                     <Grid item className={classes.contactList}>
-                        {sortedContacts.map((el, id) => <ContactCard key={id} data={el} /> )}
+                        {
+                            contacts.length ?
+                                sortedContacts.map((el, id) =>
+                                    <CardActionArea key={id} onDoubleClick={onCardClick(el)}>
+                                        <ContactCard key={id} data={el}/>
+                                    </CardActionArea>
+                                )
+                                :
+                                <Container style={{textAlign: "center"}} maxWidth='false'>
+                                    <CircularProgress />
+                                </Container>
+                        }
                     </Grid>
                     <Grid item xs style={{ background: 'grey' }}>
                         Another users
@@ -164,7 +127,11 @@ function App({contacts, isLoader, onSetContacts}) {
                     <Typography>footer</Typography>
                 </footer>
             </main>
-            {renderMenu}
+            <Modal
+                isOpen={openModal}
+                contact={contact}
+                setClose={() => setModalOpen(false)}
+            />
         </div>
     );
 }

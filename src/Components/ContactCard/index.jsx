@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -29,14 +29,38 @@ export default function ContactCard({data}) {
                     </Typography>
                     {` ${data.username}`}
                 </Typography>
-                <Typography variant="h5" component="h2">
+                <Typography variant="h6" component="h2">
                     {data.name}
                 </Typography>
                 <Typography className={classes.pos} color="textSecondary">
-                    {`email: ${data.email}`}
+                    <Typography
+                        display='inline'
+                        color='primary'
+                        component='span'
+                    >
+                        email:
+                    </Typography>
+                    {` ${data.email}`}
                 </Typography>
                 <Typography variant="body2" component="p">
-                    {`address: ${data.address.city}, ${data.address.street} ${data.address.suite}`}
+                    <Typography
+                        display='inline'
+                        color='primary'
+                        component='span'
+                    >
+                        address:
+                    </Typography>
+                    {` ${data.address.city}, ${data.address.street} ${data.address.suite}`}
+                </Typography>
+                <Typography variant="body2" component="p">
+                    <Typography
+                        display='inline'
+                        color='primary'
+                        component='span'
+                    >
+                        website:
+                    </Typography>
+                    {` ${data.website}`}
                 </Typography>
             </CardContent>
         </Card>

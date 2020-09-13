@@ -62,13 +62,6 @@ function ContentBlock({
 
     useEffect(() => {
         setItems(getSorted(items))
-        const offset = items.length
-        setSelected(selected.map((obj, index) => (
-            {
-                ...obj,
-                draggableId: `drag-${offset + index}`
-            }
-        )))
     }, [sortValue])
 
     const getSorted = (contacts) => {
@@ -89,10 +82,7 @@ function ContentBlock({
         });
 
         return mapped.map((el, index) => {
-            return {
-                ...contacts[el.index],
-                draggableId: `drag-${index}`
-            };
+            return contacts[el.index]
         });
     }
 
@@ -182,6 +172,7 @@ function ContentBlock({
                                 !isLoader ?
                                     items.map((item, index) => (
                                         <Draggable
+                                            isDragDisabled={false}
                                             key={`drag-${item.id}`}
                                             draggableId={`drag-${item.id}`}
                                             index={index}>
@@ -212,6 +203,7 @@ function ContentBlock({
                             {
                                 selected.map((item, index) => (
                                 <Draggable
+                                    isDragDisabled={true}
                                     key={`drag-${item.id}`}
                                     draggableId={`drag-${item.id}`}
                                     index={index}>

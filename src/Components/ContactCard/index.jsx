@@ -5,6 +5,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
+import CardActionArea from "@material-ui/core/CardActionArea";
+import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles((theme) => ({
     card: {
@@ -12,56 +14,58 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function ContactCard({data}) {
+export default function ContactCard({onCardClick, data}) {
 
     const classes = useStyles();
 
     return (
         <Card className={classes.card}>
             <CardContent>
-                <Typography className={classes.title} color="textSecondary" gutterBottom>
-                    <Typography
-                        display='inline'
-                        color='primary'
-                        component='span'
-                    >
-                        user:
+                <CardActionArea onDoubleClick={onCardClick}>
+                    <Typography className={classes.title} color="textSecondary" gutterBottom>
+                        <Typography
+                            display='inline'
+                            color='primary'
+                            component='span'
+                        >
+                            user:
+                        </Typography>
+                        {` ${data.username}`}
                     </Typography>
-                    {` ${data.username}`}
-                </Typography>
-                <Typography variant="h6" component="h2">
-                    {data.name}
-                </Typography>
-                <Typography className={classes.pos} color="textSecondary">
-                    <Typography
-                        display='inline'
-                        color='primary'
-                        component='span'
-                    >
-                        email:
+                    <Typography variant="h6" component="h2">
+                        {data.name}
                     </Typography>
-                    {` ${data.email}`}
-                </Typography>
-                <Typography variant="body2" component="p">
-                    <Typography
-                        display='inline'
-                        color='primary'
-                        component='span'
-                    >
-                        address:
+                    <Typography className={classes.pos} color="textSecondary">
+                        <Typography
+                            display='inline'
+                            color='primary'
+                            component='span'
+                        >
+                            email:
+                        </Typography>
+                        {` ${data.email}`}
                     </Typography>
-                    {` ${data.address.city}, ${data.address.street} ${data.address.suite}`}
-                </Typography>
-                <Typography variant="body2" component="p">
-                    <Typography
-                        display='inline'
-                        color='primary'
-                        component='span'
-                    >
-                        website:
+                    <Typography variant="body2" component="p">
+                        <Typography
+                            display='inline'
+                            color='primary'
+                            component='span'
+                        >
+                            address:
+                        </Typography>
+                        {` ${data.address.city}, ${data.address.street} ${data.address.suite}`}
                     </Typography>
-                    {` ${data.website}`}
-                </Typography>
+                    <Typography variant="body2" component="p">
+                        <Typography
+                            display='inline'
+                            color='primary'
+                            component='span'
+                        >
+                            website:
+                        </Typography>
+                        {` ${data.website}`}
+                    </Typography>
+                </CardActionArea>
             </CardContent>
         </Card>
     );

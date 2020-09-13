@@ -3,32 +3,41 @@ import React, {useEffect, useState} from 'react';
 import {connect} from "react-redux";
 import {setContacts as onSetContacts} from "Redux/Contact/contact.actions";
 
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+
 import ContactCard from "Components/ContactCard";
 
 
 import 'fontsource-roboto';
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from '@material-ui/core/Grid';
-import CardActionArea from '@material-ui/core/CardActionArea';
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {Container} from "@material-ui/core";
+import Divider from "@material-ui/core/Divider";
 
-import Card from '@material-ui/core/Card';
 
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
-const useStyles = makeStyles((theme) => ({
-    content: {
-        display: 'flex',
-        flexGrow: 1
-    },
-    contactList: {
-        width: theme.spacing(50),
-        overflow: 'auto',
-        maxHeight: '84vh',
-        cursor: 'pointer'
+
+const useStyles = makeStyles((theme) => {
+    const box = {
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        maxHeight: '84vh'
     }
-}));
+    return {
+        content: {
+            display: 'flex',
+                flexGrow: 1
+        },
+        contactList: {
+            width: theme.spacing(50),
+            cursor: 'pointer',
+            ...box
+        },
+        selectedList: box,
+        box
+    }
+});
 
 function ContentBlock({
         contacts,
@@ -48,11 +57,19 @@ function ContentBlock({
     }, []);
 
     useEffect(() => {
-        console.log('Effect:' + contacts.length)
         setItems(getSorted(contacts))
     }, [contacts])
 
-    console.log(items)
+    useEffect(() => {
+        setItems(getSorted(items))
+        const offset = items.length
+        setSelected(selected.map((obj, index) => (
+            {
+                ...obj,
+                draggableId: `drag-${offset + index}`
+            }
+        )))
+    }, [sortValue])
 
     const getSorted = (contacts) => {
         const mapped = contacts.map((el, i) => {
@@ -134,12 +151,11 @@ function ContentBlock({
 
             if (source.droppableId === 'droppable2') {
                 setSelected(items)
+                return;
             }
 
-            // sortedContacts = Array.from(items);
             setItems(items)
         } else {
-            debugger;
             const result = move(
                 getList(source.droppableId),
                 getList(destination.droppableId),
@@ -160,14 +176,14 @@ function ContentBlock({
             <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable droppableId="droppable">
                     {(provided) => (
-                        <Grid item xs className={classes.contactList}
+                        <Grid className={classes.contactList} item
                               ref={provided.innerRef}>
                             {
                                 !isLoader ?
                                     items.map((item, index) => (
                                         <Draggable
-                                            key={item.draggableId}
-                                            draggableId={item.draggableId}
+                                            key={`drag-${item.id}`}
+                                            draggableId={`drag-${item.id}`}
                                             index={index}>
                                             {(provided) => (
                                                 <div
@@ -188,15 +204,16 @@ function ContentBlock({
                         </Grid>
                     )}
                 </Droppable>
+                <Divider orientation="vertical" flexItem />
                 <Droppable droppableId="droppable2">
                     {(provided) => (
-                        <Grid item xs
+                        <Grid className={classes.box} item xs
                             ref={provided.innerRef}>
                             {
                                 selected.map((item, index) => (
                                 <Draggable
-                                    key={item.draggableId}
-                                    draggableId={item.draggableId}
+                                    key={`drag-${item.id}`}
+                                    draggableId={`drag-${item.id}`}
                                     index={index}>
                                     {(provided) => (
                                         <div

@@ -15,18 +15,14 @@ const reducer = (state = initialState, action) => {
 				...state,
 				isLoader: true
 			}
-			break
 		case SET_CONTACTS.SUCCESS:
 			console.log('action>>>', action)
 			return {
 				...state,
 				contacts: action.data
 			}
-			break
 		default:
 			return state
-			break
-
 	}
 }
 
